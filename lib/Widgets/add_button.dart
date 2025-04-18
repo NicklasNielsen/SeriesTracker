@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 
 class AddButton extends StatelessWidget {
-  AddButton({@required this.onPressed, @required this.text});
+  AddButton({required this.onPressed, required this.text});
 
   final GestureTapCallback onPressed;
   final String text;

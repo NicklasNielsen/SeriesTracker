@@ -8,7 +8,15 @@ class Series {
   String episodeDuration;
   String actors;
 
-  Series({this.title, this.season, this.episode, this.imageUrl, this.totalSeasons, this.released, this.episodeDuration, this.actors});
+  Series({required this.title, 
+    required this.season, 
+    required this.episode, 
+    required this.imageUrl, 
+    required this.totalSeasons, 
+    required this.released, 
+    required this.episodeDuration, 
+    required this.actors,
+  });
 
   factory Series.fromJson(Map<String, dynamic> json) {
   return Series(
@@ -24,14 +32,14 @@ class Series {
 
   Map<String, dynamic> toJson() {
     return {
-      'Title': this.title,
-      'Season': this.season,
-      'Episode': this.episode,
-      'Poster': this.imageUrl,
-      'totalSeasons': this.totalSeasons,
-      'Actors': this.actors,
-      'Released': this.released,
-      'Runtime': this.episodeDuration
+      'Title': title,
+      'Season': season,
+      'Episode': episode,
+      'Poster': imageUrl,
+      'totalSeasons': totalSeasons,
+      'Actors': actors,
+      'Released': released,
+      'Runtime': episodeDuration,
     };
   }
 }
