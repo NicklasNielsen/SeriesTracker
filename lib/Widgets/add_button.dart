@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 
 class AddButton extends StatelessWidget {
-  AddButton({required this.onPressed, required this.text});
+  const AddButton({required this.onPressed, required this.text, super.key});
 
   final GestureTapCallback onPressed;
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
+  Widget build(BuildContext context) => RawMaterialButton(
       fillColor:  Colors.deepOrange,
       splashColor: Colors.orange,
       onPressed: onPressed,
@@ -29,5 +28,4 @@ class AddButton extends StatelessWidget {
         )
       ),
     );
-  }
 }

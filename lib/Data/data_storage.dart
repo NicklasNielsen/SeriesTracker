@@ -13,7 +13,6 @@ class DataStorage {
     } catch (e) {
       print(e);
     }
-    
   }
 
   static Future<File> get _localFile async {

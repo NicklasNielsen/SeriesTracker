@@ -3,20 +3,20 @@ class Series {
   int season;
   int episode;
   String imageUrl;
-  String totalSeasons;
-  String released;
-  String episodeDuration;
-  String actors;
+  String? totalSeasons;
+  String? released;
+  String? episodeDuration;
+  String? actors;
 
   Series({required this.title, 
-    required this.season, 
-    required this.episode, 
+    int? season, 
+    int? episode, 
     required this.imageUrl, 
-    required this.totalSeasons, 
-    required this.released, 
-    required this.episodeDuration, 
-    required this.actors,
-  });
+    this.totalSeasons, 
+    this.released, 
+    this.episodeDuration, 
+    this.actors,
+  }): season = season ?? 1, episode = episode ?? 1;
 
   factory Series.fromJson(Map<String, dynamic> json) {
   return Series(

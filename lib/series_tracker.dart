@@ -45,11 +45,11 @@ class SeriesTrackerState extends State<SeriesTracker> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "Home",
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: "Add",
+            label: 'Add',
           ),
           //Sort??
         ],

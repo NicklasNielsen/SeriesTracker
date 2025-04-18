@@ -10,10 +10,11 @@ class DataRetriever {
     return Series.fromJson(data);
   }
 
-  static Future<List<dynamic>> searchSeries(String param) async {
+  static Future<List<Series>> searchSeries(String param) async {
     var res = await http.get(Uri.parse("http://www.omdbapi.com/?apikey=c61fa8a6&s=$param*&type=series"));
-    var data = json.decode(res.body);
-    
-    return data["Search"];
+    var data = json.decode(res.body)["Search"];
+
+    final series = (data as List<dynamic>).map((e) => Series(title: e['Title'], imageUrl: e['Poster']));
+    return series.toList();
   }
 }

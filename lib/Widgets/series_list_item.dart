@@ -4,10 +4,10 @@ import '../Data/data_storage.dart';
 import '../Screens/series_details.dart';
 
 class SeriesListItem extends StatelessWidget {
-  final Series series;
-
   const SeriesListItem({required this.series, super.key});
   
+  final Series series;
+
   @override
   Widget build(BuildContext context) => ListTile(
         onLongPress: () {
@@ -18,6 +18,6 @@ class SeriesListItem extends StatelessWidget {
         leading: Image(
           image: NetworkImage(series.imageUrl)),
         title: Text(series.title),
-        subtitle: Text("Season: ${series.season.toString()}, Episode: ${series.episode.toString()}"),
+        subtitle: Text('Season: ${series.season.toString()}, Episode: ${series.episode.toString()}'),
         );
 }
