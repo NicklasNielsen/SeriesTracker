@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
+
 class Series {
   String title;
-  int season;
-  int episode;
+  ValueNotifier<int> season;
+  ValueNotifier<int> episode;
   String imageUrl;
   String? totalSeasons;
   String? released;
@@ -16,7 +18,7 @@ class Series {
     this.released, 
     this.episodeDuration, 
     this.actors,
-  }): season = season ?? 1, episode = episode ?? 1;
+  }): season = ValueNotifier(season ?? 1), episode = ValueNotifier(episode ?? 1);
 
   factory Series.fromJson(Map<String, dynamic> json) {
   return Series(

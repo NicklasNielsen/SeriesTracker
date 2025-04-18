@@ -32,8 +32,8 @@ class DataStorage {
 
   static Future<void> update(Series item, int season, int episode) async {
     var index = series.indexWhere((x) => x.title == item.title);
-    series[index].season = season != 0 ? season : series[index].season;
-    series[index].episode = episode != 0 ? episode : series[index].episode;
+    series[index].season.value = season != 0 ? season : series[index].season.value;
+    series[index].episode.value = episode != 0 ? episode : series[index].episode.value;
     await saveToFile();
   }
 

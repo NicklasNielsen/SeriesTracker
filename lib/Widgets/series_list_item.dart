@@ -11,13 +11,16 @@ class SeriesListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
         onLongPress: () {
-          DataStorage.update(series, 0, series.episode + 1);
+          DataStorage.update(series, 0, series.episode.value + 1);
         },
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => SeriesDetails(series: series))),
         leading: Image(
           image: NetworkImage(series.imageUrl)),
         title: Text(series.title),
-        subtitle: Text('Season: ${series.season.toString()}, Episode: ${series.episode.toString()}'),
+        subtitle: ValueListenableBuilder(valueListenable: series.season, builder: (context, season, _) => 
+            ValueListenableBuilder(valueListenable: series.episode, builder: (context, episode, _) => Text('Season: $season, Episode: $episode'),
+            ),
+          ),
         );
 }

@@ -47,28 +47,30 @@ getSubtitle(Series series) {
     children: <Widget>[
       Text('Season: '),
       Flexible(
-        child: TextField(
-          onChanged: (seasonIn) { 
-            DataStorage.update(series, int.parse(seasonIn), 0);
-          },
-          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
-          decoration: InputDecoration(
-            hintText: '${series.season}',
-            border: InputBorder.none,
+        child: ValueListenableBuilder(valueListenable: series.season, builder: (context, season, child) => TextField(
+            onChanged: (seasonIn) { 
+              DataStorage.update(series, int.parse(seasonIn), 0);
+            },
+            keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
+            decoration: InputDecoration(
+              hintText: '${series.season.value}',
+              border: InputBorder.none,
+            ),
           ),
         ),
       ),
       const SizedBox(width: 30.0,),
       Text('Episode: '),
       Flexible(
-        child: TextField(
-          onChanged: (episodeIn) { 
-            DataStorage.update(series, 0, int.parse(episodeIn));
-          },
-          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
-          decoration: InputDecoration(
-            hintText: '${series.episode}',
-            border: InputBorder.none,
+        child: ValueListenableBuilder(valueListenable: series.episode, builder: (context, episode, child) => TextField(
+            onChanged: (episodeIn) { 
+              DataStorage.update(series, 0, int.parse(episodeIn));
+            },
+            keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
+            decoration: InputDecoration(
+              hintText: '${series.episode.value}',
+              border: InputBorder.none,
+            ),
           ),
         ),
       )

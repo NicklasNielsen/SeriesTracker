@@ -88,8 +88,8 @@ class AddSeriesState extends State<AddSeries> {
         text: 'Save',
         onPressed: () async {
             var series = await DataRetriever.getSeriesInformation(title);
-            series.season = season;
-            series.episode = episode;
+            series.season.value = season;
+            series.episode.value = episode;
             DataStorage.add(series);
             widget.viewCb(0);
         }
