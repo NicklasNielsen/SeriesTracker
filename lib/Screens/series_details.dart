@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../DataModels/series.dart';
-import '../Data/data_storage.dart';
 
 class SeriesDetails extends StatelessWidget {
+  const SeriesDetails({
+    required this.series,
+    required this.update,
+    super.key,
+  });
+
   final Series series;
-  final double height = 150;
-  
-  const SeriesDetails({required this.series, super.key});
+  final void Function(Series, {int? season, int? episode}) update;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +23,13 @@ class SeriesDetails extends StatelessWidget {
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(series.title, style: localtheme.textTheme.displayMedium,),
-              getSubtitle(series),
-              SizedBox(height: 16.0,),
+              getSubtitle(series, update),
+              SizedBox(height: 16,),
               Text('Episode duration: ${series.episodeDuration}'),
               Text('Total seasons: ${series.totalSeasons}'),
               Text('Released: ${series.released}'),
@@ -40,7 +43,7 @@ class SeriesDetails extends StatelessWidget {
 }
 
 
-getSubtitle(Series series) {
+getSubtitle(Series series, void Function(Series, {int? season, int? episode}) update) {
   return Row(
     mainAxisSize: MainAxisSize.min,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,9 +51,7 @@ getSubtitle(Series series) {
       Text('Season: '),
       Flexible(
         child: ValueListenableBuilder(valueListenable: series.season, builder: (context, season, child) => TextField(
-            onChanged: (seasonIn) { 
-              DataStorage.update(series, int.parse(seasonIn), 0);
-            },
+            onChanged: (seasonIn) => update(series, season: int.parse(seasonIn)),
             keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
             decoration: InputDecoration(
               hintText: '${series.season.value}',
@@ -63,9 +64,7 @@ getSubtitle(Series series) {
       Text('Episode: '),
       Flexible(
         child: ValueListenableBuilder(valueListenable: series.episode, builder: (context, episode, child) => TextField(
-            onChanged: (episodeIn) { 
-              DataStorage.update(series, 0, int.parse(episodeIn));
-            },
+            onChanged: (episodeIn) => update(series, episode: int.parse(episodeIn)),
             keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
             decoration: InputDecoration(
               hintText: '${series.episode.value}',

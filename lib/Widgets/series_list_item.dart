@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import '../DataModels/series.dart';
-import '../Data/data_storage.dart';
 import '../Screens/series_details.dart';
 
 class SeriesListItem extends StatelessWidget {
-  const SeriesListItem({required this.series, super.key});
+  const SeriesListItem({
+    required this.series,
+    required this.update,
+    super.key,
+  });
   
   final Series series;
+  final void Function(Series, {int? season, int? episode}) update;
 
   @override
   Widget build(BuildContext context) => ListTile(
-        onLongPress: () {
-          DataStorage.update(series, 0, series.episode.value + 1);
-        },
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SeriesDetails(series: series))),
+          builder: (context) => SeriesDetails(series: series, update: update))),
         leading: Image(
           image: NetworkImage(series.imageUrl)),
         title: Text(series.title),
