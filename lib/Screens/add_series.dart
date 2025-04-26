@@ -35,7 +35,7 @@ class AddSeries extends StatelessWidget {
             ),
             onSelected: (input) async {
               final navigator = Navigator.of(context);
-              final series = await _dataRetriever.getSeriesInformation(id: input.id, title: input.title);
+              final series = await _dataRetriever.getSeriesInformation(id: input.imdbId, title: input.title);
               _storage.add(item: series);
               if (navigator.canPop()) {
                 navigator.pop();

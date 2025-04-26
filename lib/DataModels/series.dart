@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 class Series {
   Series({
-    this.id,
+    this.imdbId,
     required this.title,
     required this.imageUrl,
     int? season,
@@ -11,11 +13,11 @@ class Series {
     this.released,
     this.episodeDuration,
     this.actors,
-  }): season = ValueNotifier(season ?? 1), episode = ValueNotifier(episode ?? 1);
+  }): season = ValueNotifier(season ?? 1), episode = ValueNotifier(episode ?? 1), id = generateGuid();
 
   factory Series.fromJson(Map<String, dynamic> json) {
   return Series(
-    id: json['imdbID'],
+    imdbId: json['imdbID'],
     title: json['Title'],
     imageUrl: json['Poster'],
     season: json['Season'],
@@ -26,18 +28,19 @@ class Series {
     episodeDuration: json['Runtime']);
   }
 
-  String? id;
-  String title;
-  String imageUrl;
-  ValueNotifier<int> season;
-  ValueNotifier<int> episode;
-  String? totalSeasons;
-  String? released;
-  String? episodeDuration;
-  String? actors;
+  final String id;
+  final String? imdbId;
+  final String title;
+  final String imageUrl;
+  final ValueNotifier<int> season;
+  final ValueNotifier<int> episode;
+  final String? totalSeasons;
+  final String? released;
+  final String? episodeDuration;
+  final String? actors;
 
   Map<String, dynamic> toJson() => {
-    'imdbID': id,
+    'imdbID': imdbId,
     'Title': title,
     'Poster': imageUrl,
     'Season': season.value,
@@ -47,4 +50,13 @@ class Series {
     'Runtime': episodeDuration,
     'Actors': actors,
   };
+}
+
+String generateGuid() {
+  final random = Random();
+  const chars = 'abcdef0123456789';
+
+  String segment(int length) => List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();
+
+  return '${segment(8)}-${segment(4)}-4${segment(3)}-${['8', '9', 'a', 'b'][random.nextInt(4)]}${segment(3)}-${segment(12)}';
 }

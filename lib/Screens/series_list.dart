@@ -46,8 +46,8 @@ class SeriesList extends StatelessWidget {
             );
           }
           return Dismissible(
-            key: Key(series[index].toString()),
-            onDismissed: (direction) => storage.remove(series[index]),
+            key: Key(series[index].id),
+            onDismissed: (direction) async => await storage.remove(series[index]),
             child: SeriesListItem(series: series[index], update: storage.update),
           );
         },
