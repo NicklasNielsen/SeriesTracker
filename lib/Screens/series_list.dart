@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:series_tracker/Data/data_retriever.dart';
-import 'package:series_tracker/Screens/add_series.dart';
+import 'package:series_tracker/DataModels/series.dart';
 import '../Data/local_storage.dart';
 import '../Widgets/series_list_item.dart';
 
@@ -10,17 +11,42 @@ class SeriesList extends StatelessWidget {
   SeriesList({
     DataStorage? storage,
     DataRetriever? dataFetcher,
+    ValueNotifier<bool>? adding,
     super.key,
-  }): storage = storage ?? LocalStorage(),
-      _fetcher = dataFetcher ?? OmdbApi();
+  }): _storage = storage ?? LocalStorage(),
+      _fetcher = dataFetcher ?? OmdbApi(),
+      _adding = adding ?? ValueNotifier<bool>(false);
 
-  final DataStorage storage;
+  final ValueNotifier<bool> _adding;
+  final DataStorage _storage;
   final DataRetriever _fetcher;
+
+  Widget addField(BuildContext context) {
+    return ValueListenableBuilder(valueListenable: _adding, builder: (context, isAdding, _) => isAdding ? TypeAheadField<Series>(
+      focusNode: FocusNode()..requestFocus(),
+      itemBuilder: (context, suggestion) => ListTile(
+        leading: Image(image: NetworkImage(suggestion.imageUrl),),
+        title: Text(suggestion.title),
+      ),
+      hideOnEmpty: true,
+      onSelected: (input) async {
+        final series = await _fetcher.getSeriesInformation(id: input.imdbId, title: input.title);
+        _storage.add(item: series);
+        _adding.value = false;
+      },
+      suggestionsCallback: (pattern) {
+        if (pattern.length < 3) {
+          return [];
+        }
+        return _fetcher.searchSeries(partName: pattern.trim());
+      },
+    ): Icon(Icons.add, size: 30, color: Colors.grey));
+  }
 
   @override
   Widget build(BuildContext context) => SafeArea(
     child: ValueListenableBuilder(
-      valueListenable: storage.series,
+      valueListenable: _storage.series,
       builder: (context, series, child) => ListView.builder(
         itemCount: series.length + 1,
         itemBuilder: (context, index) {
@@ -28,13 +54,13 @@ class SeriesList extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.all(8),
               child: GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddSeries(storage: storage, dataRetriever: _fetcher))),
+                onTap: () => _adding..value = true,
                 child: Stack(
                   children: [
                     Center(
                       child: Padding(
                         padding: EdgeInsets.all(8),
-                        child: Icon(Icons.add, size: 30, color: Colors.grey),
+                        child: addField(context),
                       ),
                     ),
                     Positioned.fill(
@@ -47,8 +73,8 @@ class SeriesList extends StatelessWidget {
           }
           return Dismissible(
             key: Key(series[index].id),
-            onDismissed: (direction) async => await storage.remove(series[index]),
-            child: SeriesListItem(series: series[index], update: storage.update),
+            onDismissed: (direction) async => await _storage.remove(series[index]),
+            child: SeriesListItem(series: series[index], update: _storage.update),
           );
         },
       ),
