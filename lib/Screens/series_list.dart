@@ -11,19 +11,19 @@ class SeriesList extends StatelessWidget {
   SeriesList({
     DataStorage? storage,
     DataRetriever? dataFetcher,
-    ValueNotifier<bool>? adding,
     super.key,
   }): _storage = storage ?? LocalStorage(),
       _fetcher = dataFetcher ?? OmdbApi(),
-      _adding = adding ?? ValueNotifier<bool>(false);
+      _hasFocus = ValueNotifier(null);
 
-  final ValueNotifier<bool> _adding;
+  final ValueNotifier<FocusNode?> _hasFocus;
   final DataStorage _storage;
   final DataRetriever _fetcher;
 
-  Widget addField(BuildContext context) {
-    return ValueListenableBuilder(valueListenable: _adding, builder: (context, isAdding, _) => isAdding ? TypeAheadField<Series>(
-      focusNode: FocusNode()..requestFocus(),
+  Widget addField() {
+    return ValueListenableBuilder(valueListenable: _hasFocus, builder: (context, focus, _) => focus != null ? TypeAheadField<Series>(
+      focusNode: focus,
+      autoFlipDirection: true,
       itemBuilder: (context, suggestion) => ListTile(
         leading: Image(image: NetworkImage(suggestion.imageUrl),),
         title: Text(suggestion.title),
@@ -32,7 +32,7 @@ class SeriesList extends StatelessWidget {
       onSelected: (input) async {
         final series = await _fetcher.getSeriesInformation(id: input.imdbId, title: input.title);
         _storage.add(item: series);
-        _adding.value = false;
+        _hasFocus.value = null;
       },
       suggestionsCallback: (pattern) {
         if (pattern.length < 3) {
@@ -40,7 +40,19 @@ class SeriesList extends StatelessWidget {
         }
         return _fetcher.searchSeries(partName: pattern.trim());
       },
-    ): Icon(Icons.add, size: 30, color: Colors.grey));
+      builder: (context, controller, focusNode) {
+        focusNode.addListener(() {if (focusNode.hasFocus == false) _hasFocus.value = null;});
+        return TextField(
+          controller: controller,
+          focusNode: focusNode,
+          autofocus: true,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Enter series name',
+          ),
+        );
+      },
+    ): const Icon(Icons.add, size: 30, color: Colors.grey));
   }
 
   @override
@@ -51,16 +63,17 @@ class SeriesList extends StatelessWidget {
         itemCount: series.length + 1,
         itemBuilder: (context, index) {
           if (index == series.length) {
-            return Padding(
-              padding: EdgeInsets.all(8),
-              child: GestureDetector(
-                onTap: () => _adding..value = true,
+            return GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onTap: () => _hasFocus.value = FocusNode(),
+              child: Padding(
+                padding: EdgeInsets.all(8),
                 child: Stack(
                   children: [
                     Center(
                       child: Padding(
                         padding: EdgeInsets.all(8),
-                        child: addField(context),
+                        child: addField(),
                       ),
                     ),
                     Positioned.fill(
