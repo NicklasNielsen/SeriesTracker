@@ -18,10 +18,14 @@ class SeriesListItem extends StatelessWidget {
           builder: (context) => SeriesDetails(series: series, update: update))),
         onLongPress: () => update(series, episode: series.episode.value + 1),
         leading: Image(
-          image: NetworkImage(series.imageUrl)),
+          image: NetworkImage(series.imageUrl),
+        ),
         title: Text(series.title),
-        subtitle: ValueListenableBuilder(valueListenable: series.season, builder: (context, season, _) => 
-            ValueListenableBuilder(valueListenable: series.episode, builder: (context, episode, _) => Text('Season: $season, Episode: $episode'),
+        subtitle: ValueListenableBuilder(
+          valueListenable: series.season,
+          builder: (context, season, _) => ValueListenableBuilder(
+              valueListenable: series.episode,
+              builder: (context, episode, _) => Text('Season: $season, Episode: $episode'),
             ),
           ),
         );
