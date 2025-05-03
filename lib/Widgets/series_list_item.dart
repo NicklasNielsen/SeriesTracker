@@ -16,6 +16,7 @@ class SeriesListItem extends StatelessWidget {
   Widget build(BuildContext context) => ListTile(
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => SeriesDetails(series: series, update: update))),
+        onLongPress: () => update(series, episode: series.episode.value + 1),
         leading: Image(
           image: NetworkImage(series.imageUrl)),
         title: Text(series.title),
